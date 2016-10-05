@@ -279,11 +279,13 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
             if(sampleResult.getResponseCode().isEmpty()){
                 sampleResult.setResponseCode(String.valueOf(HttpStatus.BAD_REQUEST_400));
             }
-            if(!isOK){
-                socket.close();
-            }
-            if(!socket.isConnected()){
-                connectionsMap.remove(getConnectionIdForConnectionsMap());
+            if (socket != null) {
+                if (!isOK) {
+                    socket.close();
+                }
+                if (!socket.isConnected()) {
+                    connectionsMap.remove(getConnectionIdForConnectionsMap());
+                }
             }
             sampleResult.setSuccessful(isOK);
             String logMessage = (socket != null) ? socket.getLogMessage() : "";
