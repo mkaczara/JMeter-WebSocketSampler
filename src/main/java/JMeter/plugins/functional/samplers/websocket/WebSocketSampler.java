@@ -358,7 +358,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
         try {
             port = Integer.valueOf(portAsString);
         } catch (Exception ex) {
-            port = 0;
+            return portAsString;
         }
 
         if (port == 0) {
