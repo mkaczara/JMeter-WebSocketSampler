@@ -204,7 +204,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
         String payloadMessage = getRequestPayload();
         sampleResult.setSamplerData(payloadMessage);
 
-        log.info("Read payload message: " + payloadMessage);
+        log.debug("Read payload message: " + payloadMessage);
 
         //Could improve precission by moving this closer to the action
         sampleResult.sampleStart();
