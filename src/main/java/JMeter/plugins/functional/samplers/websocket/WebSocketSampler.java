@@ -67,7 +67,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
     private static final String WSS_PREFIX = "wss://"; // $NON-NLS-1$
     private static final String DEFAULT_PROTOCOL = "ws";
 
-    private static Map<String, ServiceSocket> connectionsMap = Collections.synchronizedMap(new HashMap<String, ServiceSocket>());
+    private static final Map<String, ServiceSocket> connectionsMap = Collections.synchronizedMap(new HashMap<String, ServiceSocket>());
     private static WebSocketClient webSocketClient;
 
     private static Map<String, ScheduledExecutorService> schedulers = new HashMap<>();
@@ -204,7 +204,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
         String payloadMessage = getRequestPayload();
         sampleResult.setSamplerData(payloadMessage);
 
-        log.info("Read payload message: " + payloadMessage);
+        log.debug("Read payload message: " + payloadMessage);
 
         //Could improve precission by moving this closer to the action
         sampleResult.sampleStart();
@@ -279,11 +279,13 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
             if(sampleResult.getResponseCode().isEmpty()){
                 sampleResult.setResponseCode(String.valueOf(HttpStatus.BAD_REQUEST_400));
             }
-            if(!isOK){
-                socket.close();
-            }
-            if(!socket.isConnected()){
-                connectionsMap.remove(getConnectionIdForConnectionsMap());
+            if (socket != null) {
+                if (!isOK) {
+                    socket.close();
+                }
+                if (!socket.isConnected()) {
+                    connectionsMap.remove(getConnectionIdForConnectionsMap());
+                }
             }
             sampleResult.setSuccessful(isOK);
             String logMessage = (socket != null) ? socket.getLogMessage() : "";
@@ -356,7 +358,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
         try {
             port = Integer.valueOf(portAsString);
         } catch (Exception ex) {
-            port = 0;
+            return portAsString;
         }
 
         if (port == 0) {
@@ -683,7 +685,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
     }
 
     private void stopWebSocketClient(){
-        //Stoping WebSocket client; thanks m0ro
+        //Stopping WebSocket client; thanks m0ro
         if(!webSocketClient.isStopped() && !webSocketClient.isStopping()) {
             try {
                 webSocketClient.stop();
