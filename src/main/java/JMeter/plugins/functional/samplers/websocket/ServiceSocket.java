@@ -30,7 +30,7 @@ public class ServiceSocket {
     private static final Logger log = LoggingManager.getLoggerForClass();
 
     protected WebSocketSampler sampler;
-    protected Queue<String> responeBacklog = new ConcurrentLinkedQueue<>();
+    protected Queue<String> responseBacklog = new ConcurrentLinkedQueue<>();
     protected Integer error = 0;
     protected StringBuilder logMessage = new StringBuilder();
     protected CountDownLatch openLatch = new CountDownLatch(1);
@@ -98,13 +98,13 @@ public class ServiceSocket {
     }
 
     /**
-     * @return response message made of messages saved in the responeBacklog cache
+     * @return response message made of messages saved in the responseBacklog cache
      */
     public String getResponseMessage() {
         StringBuilder responseMessageBuilder = new StringBuilder();
 
-        //Iterate through response messages saved in the responeBacklog cache
-        for (String aResponseBacklog : responeBacklog) {
+        //Iterate through response messages saved in the responseBacklog cache
+        for (String aResponseBacklog : responseBacklog) {
             responseMessageBuilder.append(aResponseBacklog);
         }
 
@@ -112,7 +112,7 @@ public class ServiceSocket {
     }
 
     public void clearBacklog() {
-        responeBacklog.clear();
+        responseBacklog.clear();
     }
 
     public boolean awaitClose(int duration, TimeUnit unit) throws InterruptedException {
@@ -233,7 +233,7 @@ public class ServiceSocket {
 
         this.logMessage = new StringBuilder();
         this.logMessage.append("\n\n[Execution Flow]\n");
-        this.logMessage.append(" - Reusing exising connection: ").append(sampler.getConnectionIdForConnectionsMap()).append('\n');
+        this.logMessage.append(" - Reusing existing connection: ").append(sampler.getConnectionIdForConnectionsMap()).append('\n');
         this.error = 0;
 
         initializePatterns();
@@ -250,10 +250,10 @@ public class ServiceSocket {
             messageBacklog = WebSocketSampler.MESSAGE_BACKLOG_COUNT;
         }
 
-        while (responeBacklog.size() >= messageBacklog) {
-            responeBacklog.poll();
+        while (responseBacklog.size() >= messageBacklog) {
+            responseBacklog.poll();
         }
-        responeBacklog.add(message);
+        responseBacklog.add(message);
     }
 
     private String preProcessMessage(String message){

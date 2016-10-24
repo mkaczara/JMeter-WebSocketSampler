@@ -67,7 +67,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
     private static final String WSS_PREFIX = "wss://"; // $NON-NLS-1$
     private static final String DEFAULT_PROTOCOL = "ws";
 
-    private static Map<String, ServiceSocket> connectionsMap = Collections.synchronizedMap(new HashMap<String, ServiceSocket>());
+    private static final Map<String, ServiceSocket> connectionsMap = Collections.synchronizedMap(new HashMap<String, ServiceSocket>());
     private static WebSocketClient webSocketClient;
 
     private static Map<String, ScheduledExecutorService> schedulers = new HashMap<>();
@@ -685,7 +685,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
     }
 
     private void stopWebSocketClient(){
-        //Stoping WebSocket client; thanks m0ro
+        //Stopping WebSocket client; thanks m0ro
         if(!webSocketClient.isStopped() && !webSocketClient.isStopping()) {
             try {
                 webSocketClient.stop();
